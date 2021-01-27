@@ -1,0 +1,45 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgb(247, 232, 216);
+}
+
+.chessboard {
+    margin: auto;
+    margin-top: 60px;
+    width: 800px;
+    height: 800px;
+    border: 13px solid rgb(80, 33, 0);
+    border-radius: 3%;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(8, 100px);
+    height: 100px;
+}
+
+.field {
+    width: 100px;
+    height: 100px;
+}
+
+.white-field {
+    background-color: white;
+}
+
+.black-field {
+    background-color: rgb(100, 100, 100);
+}
+
+.figure {
+    font-size: 70px;
+    margin-left: 13px;
+}
+
+.white-figure {
+    color: rgb(223, 174, 111);
+}
