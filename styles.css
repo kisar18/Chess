@@ -3,17 +3,76 @@
     padding: 0;
 }
 
+.game {
+    position: relative;
+    height: 896px;
+    width: 926px;
+    margin: auto;
+    margin-top: 5px;
+}
+
 body {
     background-color: rgb(247, 232, 216);
 }
 
 .chessboard {
-    margin: auto;
-    margin-top: 60px;
+    position: absolute;
+    top: 35px;
+    left: 50px;
     width: 800px;
     height: 800px;
     border: 13px solid rgb(80, 33, 0);
     border-radius: 3%;
+}
+
+.description-top {
+    display: grid;
+    grid-template-columns: repeat(8, 100px);
+    position: absolute;
+    left: 63px;
+    width: 800px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.description-left {
+    display: grid;
+    grid-template-rows: repeat(8, 100px);
+    position: absolute;
+    top: 48px;
+    width: 50px;
+    height: 800px;
+    text-align: center;
+    line-height: 100px;
+}
+
+.description-right {
+    display: grid;
+    grid-template-rows: repeat(8, 100px);
+    position: absolute;
+    top: 48px;
+    right: 0;
+    width: 50px;
+    height: 800px;
+    text-align: center;
+    line-height: 100px;
+}
+
+.description-bot {
+    display: grid;
+    grid-template-columns: repeat(8, 100px);
+    position: absolute;
+    left: 63px;
+    bottom: 0;
+    width: 800px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+}
+
+.char {
+    font-weight: bold;
 }
 
 .row {
@@ -37,7 +96,7 @@ body {
 
 .figure {
     font-size: 70px;
-    margin-left: 13px;
+    margin-left: 14px;
 }
 
 .white-figure {
