@@ -82,6 +82,7 @@ body {
 }
 
 .field {
+    position: relative;
     width: 100px;
     height: 100px;
 }
@@ -95,8 +96,14 @@ body {
 }
 
 .figure {
-    font-size: 70px;
-    margin-left: 14px;
+    font-size: 65px;
+    text-align: center;
+    margin-top: 10px;
+    cursor: move;
+}
+
+.figure.dragging {
+    opacity: .5;
 }
 
 .white-figure {

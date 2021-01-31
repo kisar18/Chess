@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
     <title>Chess game</title>
 </head>
 <body>
@@ -40,24 +41,24 @@
         </div>
         <div class="chessboard">
             <div class="row">
-                <div class="white-field field a8"><h2 class="figure">&#9820</h2></div>
-                <div class="black-field field b8"><h2 class="figure">&#9822</h2></div>
-                <div class="white-field field c8"><h2 class="figure">&#9821</h2></div>
-                <div class="black-field field d8"><h2 class="figure">&#9819</h2></div>
-                <div class="white-field field e8"><h2 class="figure">&#9818</h2></div>
-                <div class="black-field field f8"><h2 class="figure">&#9821</h2></div>
-                <div class="white-field field g8"><h2 class="figure">&#9822</h2></div>
-                <div class="black-field field h8"><h2 class="figure">&#9820</h2></div>
+                <div class="white-field field a8"><h2 class="figure black-figure rook" draggable="true">&#9820</h2></div>
+                <div class="black-field field b8"><h2 class="figure black-figure knight" draggable="true">&#9822</h2></div>
+                <div class="white-field field c8"><h2 class="figure black-figure bishop" draggable="true">&#9821</h2></div>
+                <div class="black-field field d8"><h2 class="figure black-figure king" draggable="true">&#9819</h2></div>
+                <div class="white-field field e8"><h2 class="figure black-figure queen" draggable="true">&#9818</h2></div>
+                <div class="black-field field f8"><h2 class="figure black-figure bishop" draggable="true">&#9821</h2></div>
+                <div class="white-field field g8"><h2 class="figure black-figure knight" draggable="true">&#9822</h2></div>
+                <div class="black-field field h8"><h2 class="figure black-figure rook" draggable="true">&#9820</h2></div>
             </div>
             <div class="row">
-                <div class="black-field field a7"><h2 class="figure">&#9823</h2></div>
-                <div class="white-field field b7"><h2 class="figure">&#9823</h2></div>
-                <div class="black-field field c7"><h2 class="figure">&#9823</h2></div>
-                <div class="white-field field d7"><h2 class="figure">&#9823</h2></div>
-                <div class="black-field field e7"><h2 class="figure">&#9823</h2></div>
-                <div class="white-field field f7"><h2 class="figure">&#9823</h2></div>
-                <div class="black-field field g7"><h2 class="figure">&#9823</h2></div>
-                <div class="white-field field h7"><h2 class="figure">&#9823</h2></div>
+                <div class="black-field field a7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="white-field field b7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="black-field field c7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="white-field field d7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="black-field field e7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="white-field field f7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="black-field field g7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
+                <div class="white-field field h7"><h2 class="figure black-figure pawn" draggable="true">&#9823</h2></div>
             </div>
             <div class="row">
                 <div class="white-field field a6"></div>
@@ -100,24 +101,24 @@
                 <div class="white-field field h3"></div>
             </div>
             <div class="row">
-                <div class="white-field field a2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="black-field field b2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="white-field field c2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="black-field field d2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="white-field field e2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="black-field field f2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="white-field field g2"><h2 class="figure white-figure">&#9817</h2></div>
-                <div class="black-field field h2"><h2 class="figure white-figure">&#9817</h2></div>
+                <div class="white-field field a2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="black-field field b2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="white-field field c2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="black-field field d2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="white-field field e2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="black-field field f2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="white-field field g2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
+                <div class="black-field field h2"><h2 class="figure white-figure pawn" draggable="true">&#9817</h2></div>
             </div>
             <div class="row">
-                <div class="black-field field a1"><h2 class="figure white-figure">&#9814</h2></div>
-                <div class="white-field field b1"><h2 class="figure white-figure">&#9816</h2></div>
-                <div class="black-field field c1"><h2 class="figure white-figure">&#9815</h2></div>
-                <div class="white-field field d1"><h2 class="figure white-figure">&#9813</h2></div>
-                <div class="black-field field e1"><h2 class="figure white-figure">&#9812</h2></div>
-                <div class="white-field field f1"><h2 class="figure white-figure">&#9815</h2></div>
-                <div class="black-field field g1"><h2 class="figure white-figure">&#9816</h2></div>
-                <div class="white-field field h1"><h2 class="figure white-figure">&#9814</h2></div>
+                <div class="black-field field a1"><h2 class="figure white-figure rook" draggable="true">&#9814</h2></div>
+                <div class="white-field field b1"><h2 class="figure white-figure knight" draggable="true">&#9816</h2></div>
+                <div class="black-field field c1"><h2 class="figure white-figure bishop" draggable="true">&#9815</h2></div>
+                <div class="white-field field d1"><h2 class="figure white-figure king" draggable="true">&#9813</h2></div>
+                <div class="black-field field e1"><h2 class="figure white-figure queen" draggable="true">&#9812</h2></div>
+                <div class="white-field field f1"><h2 class="figure white-figure bishop" draggable="true">&#9815</h2></div>
+                <div class="black-field field g1"><h2 class="figure white-figure knight" draggable="true">&#9816</h2></div>
+                <div class="white-field field h1"><h2 class="figure white-figure rook" draggable="true">&#9814</h2></div>
             </div>
         </div>
         <div class="description-bot">
