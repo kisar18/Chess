@@ -96,9 +96,11 @@ body {
 }
 
 .figure {
+    position: absolute;
+    top: 12px;
+    left: 16px;
     font-size: 65px;
     text-align: center;
-    margin-top: 10px;
     cursor: move;
 }
 
