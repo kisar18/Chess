@@ -12,7 +12,9 @@
 }
 
 body {
-    background-color: rgb(247, 232, 216);
+    /* background-color: rgb(247, 232, 216); */
+    background: rgb(255,253,193);
+    background: radial-gradient(circle, rgba(255,253,193,1) 38%, rgba(244,201,156,1) 70%);
 }
 
 .chessboard {
@@ -101,7 +103,6 @@ body {
     left: 16px;
     font-size: 65px;
     text-align: center;
-    cursor: move;
 }
 
 .figure.dragging {
@@ -110,4 +111,5 @@ body {
 
 .white-figure {
     color: rgb(223, 174, 111);
+    cursor: move;
 }
