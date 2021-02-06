@@ -1,4 +1,14 @@
-* {
+:root {
+    --clr-bg: rgb(255,253,193);
+    --clr-whiteField: white;
+    --clr-blackField: rgb(100, 100, 100);
+    --clr-whiteFigure: rgb(223, 174, 111);
+    --clr-chessboardBorder: rgb(80, 33, 0);
+}
+
+*,
+*::before,
+*::after {
     margin: 0;
     padding: 0;
 }
@@ -13,7 +23,7 @@
 
 body {
     /* background-color: rgb(247, 232, 216); */
-    background: rgb(255,253,193);
+    background: var(--clr-bg);
     background: radial-gradient(circle, rgba(255,253,193,1) 38%, rgba(244,201,156,1) 70%);
 }
 
@@ -23,7 +33,7 @@ body {
     left: 50px;
     width: 800px;
     height: 800px;
-    border: 13px solid rgb(80, 33, 0);
+    border: 13px solid var(--clr-chessboardBorder);
     border-radius: 3%;
 }
 
@@ -90,11 +100,11 @@ body {
 }
 
 .white-field {
-    background-color: white;
+    background-color: var(--clr-whiteField);
 }
 
 .black-field {
-    background-color: rgb(100, 100, 100);
+    background-color: var(--clr-blackField);
 }
 
 .figure {
@@ -110,6 +120,6 @@ body {
 }
 
 .white-figure {
-    color: rgb(223, 174, 111);
+    color: var(--clr-whiteFigure);
     cursor: move;
 }

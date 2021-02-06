@@ -19,22 +19,46 @@ figures.forEach(figure => {
 
     if (figure.id > 20 && figure.id < 40) {
         figure.dataset.name = "pawn"
+        if (figure.dataset.color == "white") {
+            figure.dataset.possibleMoves = "+1+0+2+0"
+        }
+        else {
+            figure.dataset.possibleMoves = "-1+0-2+0"
+        }
     }
     else {
         if (figure.id[1] == 1 || figure.id[1] == 8) {
             figure.dataset.name = "rook"
+            figure.dataset.possibleMoves = "+1+0+2+0+3+0+4+0+5+0+6+0+7+0\
+            +0+1+0+2+0+3+0+4+0+5+0+6+0+7\
+            -1+0-2+0-3+0-4+0-5+0-6+0-7+0\
+            +0-1+0-2+0-3+0-4+0-5+0-6+0-7"
         }
         else if (figure.id[1] == 2 || figure.id[1] == 7) {
             figure.dataset.name = "knight"
+            figure.dataset.possibleMoves ="+2+1+2-1+1+2+1-2-2+1-2-1-1+2-1-2"
         }
         else if (figure.id[1] == 3 || figure.id[1] == 6) {
             figure.dataset.name = "bishop"
+            figure.dataset.possibleMoves ="+1+1+2+2+3+3+4+4+5+5+6+6+7+7\
+            +1-1+2-2+3-3+4-4+5-5+6-6+7-7\
+            -1+1-2+2-3+3-4+4-5+5-6+6-7+7\
+            -1-1-2-2-3-3-4-4-5-5-6-6-7-7"
         }
         else if (figure.id[1] == 4) {
             figure.dataset.name = "king"
+            figure.dataset.possibleMoves ="+0+1+0-1+1+1+1-1+1+0-1+1-1+0-1-1"
         }
         else {
             figure.dataset.name = "queen"
+            figure.dataset.possibleMoves = "+0+1+0+2+0+3+0+4+0+5+0+6+0+7\
+            +1+0+2+0+3+0+4+0+5+0+6+0+7+0\
+            +0-1+0-2+0-3+0-4+0-5+0-6+0-7\
+            -1+0-2+0-3+0-4+0-5+0-6+0-7+0\
+            +1+1+2+2+3+3+4+4+5+5+6+6+7+7\
+            +1-1+2-2+3-3+4-4+5-5+6-6+7-7\
+            -1+1-2+2-3+3-4+4-5+5-6+6-7+7\
+            -1-1-2-2-3-3-4-4-5-5-6-6-7-7"
         }
     }
 
@@ -88,6 +112,10 @@ figures.forEach(figure => {
         figure.dataset.currentPosition = figure.parentElement.id
         if (figure.dataset.previousPosition != figure.dataset.currentPosition) {
             figure.dataset.firstMove = false
+            if (figure.dataset.name == "pawn") {
+                var temp = figure.dataset.possibleMoves
+                figure.dataset.possibleMoves = temp.slice(0, 4)
+            }
             moves += 1
             updateFieldOccupation(figure)
             switching()
@@ -162,21 +190,24 @@ function updateFieldOccupation(fg) {
 // Function to ensure that players figure cant be deleted by other figure of same color
 
 function getAllowedFields(fg) {
-    deleted = 0
-    addW = 0
-    addB = 0
     fields.forEach(field => {
+        if (field.classList.contains('allowedByRules') == true) {
+            field.classList.remove('allowedByRules')
+        }
         if (field.classList.contains('allowed') == true) {
             field.classList.remove('allowed')
-            deleted += 1
         }
+    })
+
+    getFieldsByRules(fg)
+
+    allowedByRulesFields = document.querySelectorAll('.allowedByRules')
+    allowedByRulesFields.forEach(field => {
         if (JSON.parse(field.dataset.occupiedByWhite) == false && fg.dataset.color == "white") {
             field.classList.add('allowed')
-            addW += 1
         }
         else if (JSON.parse(field.dataset.occupiedByBlack) == false && fg.dataset.color == "black") {
             field.classList.add('allowed')
-            addB += 1
         }
         else if (fg.dataset.previousPosition == field.id) {
             field.classList.add('allowed')
@@ -184,6 +215,8 @@ function getAllowedFields(fg) {
     })
     allowedFields = document.querySelectorAll('.allowed')
 }
+
+// Function for placing the dragged figure to the statring field while draging over the figure of the same color
 
 function findPreviousField(fg) {
     fields.forEach(field => {
@@ -196,4 +229,58 @@ function findPreviousField(fg) {
             field.appendChild(fg)
         }
     })
+}
+
+// Function which adds a class 'allowedByRuled' to those fields that are allowed by rules for current figure
+
+function getFieldsByRules(fg) {
+    var newRow
+    var newColumn
+    var wasFound = false
+    var backupRow
+    var backupColumn
+
+    fields.forEach(field => {
+        if (field.id == fg.dataset.previousPosition) {
+            newRow = parseInt(field.dataset.row)
+            newColumn = parseInt(field.dataset.column)
+            backupRow = newRow
+            backupColumn = newColumn
+        }
+    })
+    var stringMoves = fg.dataset.possibleMoves
+    for (let i = 0; i < stringMoves.length; i++) {
+        if (i % 4 == 0) {
+            if (stringMoves[i] == "-" && stringMoves[i + 2] == "-") {
+                newRow -= parseInt(stringMoves[i + 1])
+                newColumn -= parseInt(stringMoves[i + 3])
+            }
+            else if (stringMoves[i] == "-" && stringMoves[i + 2] == "+") {
+                newRow -= parseInt(stringMoves[i + 1])
+                newColumn += parseInt(stringMoves[i + 3])
+            }
+            else if (stringMoves[i] == "+" && stringMoves[i + 2] == "-") {
+                newRow += parseInt(stringMoves[i + 1])
+                newColumn -= parseInt(stringMoves[i + 3])
+            }
+            else {
+                newRow += parseInt(stringMoves[i + 1])
+                newColumn += parseInt(stringMoves[i + 3])
+            }
+            if (newRow > 0 && newRow < 9 && newColumn > 0 && newColumn < 9) {
+                fields.forEach(field => {
+                    if (field.dataset.row == newRow && field.dataset.column == newColumn && wasFound == false) {
+                        field.classList.add('allowedByRules')
+                        wasFound = true
+                    }
+                })
+                wasFound = false
+            }
+            newRow = backupRow
+            newColumn = backupColumn
+        }
+        else {
+            continue
+        }
+    }
 }
