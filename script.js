@@ -29,33 +29,36 @@ figures.forEach(figure => {
     else {
         if (figure.id[1] == 1 || figure.id[1] == 8) {
             figure.dataset.name = "rook"
-            figure.dataset.possibleMoves = "+1+0+2+0+3+0+4+0+5+0+6+0+7+0|+0+1+0+2+0+3+0+4+0+5+0+6+0+7|-1+0-2+0-3+0-4+0-5+0-6+0-7+0|+0-1+0-2+0-3+0-4+0-5+0-6+0-7"
+            figure.dataset.possibleMoves = "+1+0+2+0+3+0+4+0+5+0+6+0+7+0\
+            |+0+1+0+2+0+3+0+4+0+5+0+6+0+7\
+            |-1+0-2+0-3+0-4+0-5+0-6+0-7+0\
+            |+0-1+0-2+0-3+0-4+0-5+0-6+0-7"
         }
         else if (figure.id[1] == 2 || figure.id[1] == 7) {
             figure.dataset.name = "knight"
-            figure.dataset.possibleMoves ="+2+1+2-1+1+2+1-2-2+1-2-1-1+2-1-2"
+            figure.dataset.possibleMoves ="+2+1|+2-1|+1+2|+1-2|-2+1|-2-1|-1+2|-1-2"
         }
         else if (figure.id[1] == 3 || figure.id[1] == 6) {
             figure.dataset.name = "bishop"
             figure.dataset.possibleMoves ="+1+1+2+2+3+3+4+4+5+5+6+6+7+7\
-            +1-1+2-2+3-3+4-4+5-5+6-6+7-7\
-            -1+1-2+2-3+3-4+4-5+5-6+6-7+7\
-            -1-1-2-2-3-3-4-4-5-5-6-6-7-7"
+            |+1-1+2-2+3-3+4-4+5-5+6-6+7-7\
+            |-1+1-2+2-3+3-4+4-5+5-6+6-7+7\
+            |-1-1-2-2-3-3-4-4-5-5-6-6-7-7"
         }
         else if (figure.id[1] == 4) {
             figure.dataset.name = "king"
-            figure.dataset.possibleMoves ="+0+1+0-1+1+1+1-1+1+0-1+1-1+0-1-1"
+            figure.dataset.possibleMoves ="+0+1|+0-1|+1+1|+1-1|+1+0|-1+1|-1+0|-1-1"
         }
         else {
             figure.dataset.name = "queen"
             figure.dataset.possibleMoves = "+0+1+0+2+0+3+0+4+0+5+0+6+0+7\
-            +1+0+2+0+3+0+4+0+5+0+6+0+7+0\
-            +0-1+0-2+0-3+0-4+0-5+0-6+0-7\
-            -1+0-2+0-3+0-4+0-5+0-6+0-7+0\
-            +1+1+2+2+3+3+4+4+5+5+6+6+7+7\
-            +1-1+2-2+3-3+4-4+5-5+6-6+7-7\
-            -1+1-2+2-3+3-4+4-5+5-6+6-7+7\
-            -1-1-2-2-3-3-4-4-5-5-6-6-7-7"
+            |+1+0+2+0+3+0+4+0+5+0+6+0+7+0\
+            |+0-1+0-2+0-3+0-4+0-5+0-6+0-7\
+            |-1+0-2+0-3+0-4+0-5+0-6+0-7+0\
+            |+1+1+2+2+3+3+4+4+5+5+6+6+7+7\
+            |+1-1+2-2+3-3+4-4+5-5+6-6+7-7\
+            |-1+1-2+2-3+3-4+4-5+5-6+6-7+7\
+            |-1-1-2-2-3-3-4-4-5-5-6-6-7-7"
         }
     }
 
@@ -222,8 +225,8 @@ function getAllowedFields(fg) {
         }
         if ((i - direction) % 4 == 0) {
             if (stringMoves[i] == "-" && stringMoves[i + 2] == "-") {
-                newRow -= parseInt(stringMoves[i + direction + 1])
-                newColumn -= parseInt(stringMoves[i + direction + 3])
+                newRow -= parseInt(stringMoves[i + 1])
+                newColumn -= parseInt(stringMoves[i + 3])
             }
             else if (stringMoves[i] == "-" && stringMoves[i + 2] == "+") {
                 newRow -= parseInt(stringMoves[i + 1])
@@ -244,12 +247,14 @@ function getAllowedFields(fg) {
                         if (field.childElementCount > 0) {
                             if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByBlack) == true) {
                                 field.classList.add('allowed')
+                                console.log(field.id)
                             }
                             else if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByWhite) == true) {
                                 wasStopped = true
                             }
                             else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByWhite) == true) {
                                 field.classList.add('allowed')
+                                console.log(field.id)
                             }
                             else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByBlack) == true) {
                                 wasStopped = true
@@ -257,6 +262,7 @@ function getAllowedFields(fg) {
                         }
                         else {
                             field.classList.add('allowed')
+                            console.log(field.id)
                         }
                     }
                 })
