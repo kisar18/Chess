@@ -29,10 +29,7 @@ figures.forEach(figure => {
     else {
         if (figure.id[1] == 1 || figure.id[1] == 8) {
             figure.dataset.name = "rook"
-            figure.dataset.possibleMoves = "+1+0+2+0+3+0+4+0+5+0+6+0+7+0\
-            +0+1+0+2+0+3+0+4+0+5+0+6+0+7\
-            -1+0-2+0-3+0-4+0-5+0-6+0-7+0\
-            +0-1+0-2+0-3+0-4+0-5+0-6+0-7"
+            figure.dataset.possibleMoves = "+1+0+2+0+3+0+4+0+5+0+6+0+7+0|+0+1+0+2+0+3+0+4+0+5+0+6+0+7|-1+0-2+0-3+0-4+0-5+0-6+0-7+0|+0-1+0-2+0-3+0-4+0-5+0-6+0-7"
         }
         else if (figure.id[1] == 2 || figure.id[1] == 7) {
             figure.dataset.name = "knight"
@@ -96,11 +93,17 @@ fields.forEach(field => {
         field.dataset.occupiedByWhite = false
         field.dataset.occupiedByBlack = false
     }
+    if (field.classList.contains('white-field') == true) {
+        field.dataset.color = "white"
+    }
+    else {
+        field.dataset.color = "rgb(100, 100, 100)"
+    }
 })
 
 // Move figure by the player
 
-switching()
+switchingSides()
 figures.forEach(figure => {
     figure.addEventListener('dragstart', () => {
         figure.classList.add('dragging')
@@ -113,12 +116,12 @@ figures.forEach(figure => {
         if (figure.dataset.previousPosition != figure.dataset.currentPosition) {
             figure.dataset.firstMove = false
             if (figure.dataset.name == "pawn") {
-                var temp = figure.dataset.possibleMoves
-                figure.dataset.possibleMoves = temp.slice(0, 4)
+                var tmp_possMoves = figure.dataset.possibleMoves
+                figure.dataset.possibleMoves = tmp_possMoves.slice(0, 4)
             }
             moves += 1
             updateFieldOccupation(figure)
-            switching()
+            switchingSides()
         }
         fields.forEach(field => {
             const childs = field.childElementCount
@@ -144,7 +147,7 @@ fields.forEach(field => {
 
 // Function to guarantee the alternation of the two players during the game
 
-function switching() {
+function switchingSides() {
     if (moves % 2 == 0) {
         blackFigures.forEach(blackFigure => {
             blackFigure.setAttribute('draggable', false)
@@ -154,9 +157,6 @@ function switching() {
             whiteFigure.setAttribute('draggable', true)
             whiteFigure.style.cursor = "move"
         })
-        if (moves == 0) {
-            getAllowedFields(whiteFigures[0])
-        }
     }
     else {
         whiteFigures.forEach(whiteFigure => {
@@ -187,7 +187,7 @@ function updateFieldOccupation(fg) {
     }
 }
 
-// Function to ensure that players figure cant be deleted by other figure of same color
+// Function for selecting fields where the figure can move according to the rules, and also for not deleting a figure of the same color
 
 function getAllowedFields(fg) {
     fields.forEach(field => {
@@ -199,20 +199,79 @@ function getAllowedFields(fg) {
         }
     })
 
-    getFieldsByRules(fg)
+    var newRow
+    var newColumn
+    var wasFound = false
+    var backupRow
+    var backupColumn
+    var direction = 0
+    var wasStopped = false
 
-    allowedByRulesFields = document.querySelectorAll('.allowedByRules')
-    allowedByRulesFields.forEach(field => {
-        if (JSON.parse(field.dataset.occupiedByWhite) == false && fg.dataset.color == "white") {
-            field.classList.add('allowed')
-        }
-        else if (JSON.parse(field.dataset.occupiedByBlack) == false && fg.dataset.color == "black") {
-            field.classList.add('allowed')
-        }
-        else if (fg.dataset.previousPosition == field.id) {
-            field.classList.add('allowed')
+    canPawnDelete(fg)
+
+    fields.forEach(field => {
+        if (field.id == fg.dataset.previousPosition) {
+            newRow = parseInt(field.dataset.row)
+            newColumn = parseInt(field.dataset.column)
+            backupRow = newRow
+            backupColumn = newColumn
         }
     })
+    var stringMoves = fg.dataset.possibleMoves
+    for (let i = 0; i < stringMoves.length; i++) {
+        if (stringMoves[i] == '|') {
+            direction += 1
+            wasStopped = false
+        }
+        if ((i - direction) % 4 == 0) {
+            if (stringMoves[i] == "-" && stringMoves[i + 2] == "-") {
+                newRow -= parseInt(stringMoves[i + direction + 1])
+                newColumn -= parseInt(stringMoves[i + direction + 3])
+            }
+            else if (stringMoves[i] == "-" && stringMoves[i + 2] == "+") {
+                newRow -= parseInt(stringMoves[i + 1])
+                newColumn += parseInt(stringMoves[i + 3])
+            }
+            else if (stringMoves[i] == "+" && stringMoves[i + 2] == "-") {
+                newRow += parseInt(stringMoves[i + 1])
+                newColumn -= parseInt(stringMoves[i + 3])
+            }
+            else {
+                newRow += parseInt(stringMoves[i + 1])
+                newColumn += parseInt(stringMoves[i + 3])
+            }
+            if (newRow > 0 && newRow < 9 && newColumn > 0 && newColumn < 9 && wasStopped == false) {
+                fields.forEach(field => {
+                    if (field.dataset.row == newRow && field.dataset.column == newColumn && wasFound == false) {
+                        wasFound = true
+                        if (field.childElementCount > 0) {
+                            if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByBlack) == true) {
+                                field.classList.add('allowed')
+                            }
+                            else if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByWhite) == true) {
+                                wasStopped = true
+                            }
+                            else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByWhite) == true) {
+                                field.classList.add('allowed')
+                            }
+                            else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByBlack) == true) {
+                                wasStopped = true
+                            }
+                        }
+                        else {
+                            field.classList.add('allowed')
+                        }
+                    }
+                })
+                wasFound = false
+            }
+            newRow = backupRow
+            newColumn = backupColumn
+        }
+        else {
+            continue
+        }
+    }
     allowedFields = document.querySelectorAll('.allowed')
 }
 
@@ -231,56 +290,42 @@ function findPreviousField(fg) {
     })
 }
 
-// Function which adds a class 'allowedByRuled' to those fields that are allowed by rules for current figure
+// Adding allowed fields where pawn can delete other figure
 
-function getFieldsByRules(fg) {
-    var newRow
-    var newColumn
-    var wasFound = false
-    var backupRow
-    var backupColumn
+function canPawnDelete(fg) {
+    if (fg.dataset.name != "pawn") {
+        return
+    }
+    var prev
+    var deleteOnLeftCol
+    var deleteOnRightCol
+    var deleteRow
 
     fields.forEach(field => {
         if (field.id == fg.dataset.previousPosition) {
-            newRow = parseInt(field.dataset.row)
-            newColumn = parseInt(field.dataset.column)
-            backupRow = newRow
-            backupColumn = newColumn
+            prev = field
+            deleteOnLeftCol = parseInt(prev.dataset.column) - 1
+            deleteOnRightCol = parseInt(prev.dataset.column) + 1
         }
     })
-    var stringMoves = fg.dataset.possibleMoves
-    for (let i = 0; i < stringMoves.length; i++) {
-        if (i % 4 == 0) {
-            if (stringMoves[i] == "-" && stringMoves[i + 2] == "-") {
-                newRow -= parseInt(stringMoves[i + 1])
-                newColumn -= parseInt(stringMoves[i + 3])
-            }
-            else if (stringMoves[i] == "-" && stringMoves[i + 2] == "+") {
-                newRow -= parseInt(stringMoves[i + 1])
-                newColumn += parseInt(stringMoves[i + 3])
-            }
-            else if (stringMoves[i] == "+" && stringMoves[i + 2] == "-") {
-                newRow += parseInt(stringMoves[i + 1])
-                newColumn -= parseInt(stringMoves[i + 3])
-            }
-            else {
-                newRow += parseInt(stringMoves[i + 1])
-                newColumn += parseInt(stringMoves[i + 3])
-            }
-            if (newRow > 0 && newRow < 9 && newColumn > 0 && newColumn < 9) {
-                fields.forEach(field => {
-                    if (field.dataset.row == newRow && field.dataset.column == newColumn && wasFound == false) {
-                        field.classList.add('allowedByRules')
-                        wasFound = true
-                    }
-                })
-                wasFound = false
-            }
-            newRow = backupRow
-            newColumn = backupColumn
-        }
-        else {
-            continue
-        }
+
+    if (fg.dataset.color == "white") {
+        deleteRow = parseInt(prev.dataset.row) + 1
     }
+    else {
+        deleteRow = parseInt(prev.dataset.row) - 1
+    }
+
+    fields.forEach(field => {
+        if (parseInt(field.dataset.row) == deleteRow) {
+            if (parseInt(field.dataset.column) == deleteOnLeftCol || parseInt(field.dataset.column) == deleteOnRightCol) {
+                if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByBlack) == true) {
+                    field.classList.add('allowed')
+                }
+                else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByWhite) == true) {
+                    field.classList.add('allowed')
+                }
+            }
+        }
+    })
 }
