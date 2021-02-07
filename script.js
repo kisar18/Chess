@@ -191,9 +191,6 @@ function updateFieldOccupation(fg) {
 
 function getAllowedFields(fg) {
     fields.forEach(field => {
-        if (field.classList.contains('allowedByRules') == true) {
-            field.classList.remove('allowedByRules')
-        }
         if (field.classList.contains('allowed') == true) {
             field.classList.remove('allowed')
         }
