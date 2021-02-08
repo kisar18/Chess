@@ -67,7 +67,7 @@ figures.forEach(figure => {
     figure.dataset.currentPosition = figure.dataset.previousPosition
 })
 
-//Data attributes for fields (HTML elements) of the chessboard
+// Data attributes for fields (HTML elements) of the chessboard
 
 fields.forEach(field => {
     field.dataset.row = field.id[1]
@@ -207,7 +207,7 @@ function getAllowedFields(fg) {
     var direction = 0
     var wasStopped = false
 
-    canPawnDelete(fg)
+    //canPawnDelete(fg)
 
     fields.forEach(field => {
         if (field.id == fg.dataset.previousPosition) {
@@ -275,6 +275,7 @@ function getAllowedFields(fg) {
             continue
         }
     }
+    pawnRules(fg)
     allowedFields = document.querySelectorAll('.allowed')
 }
 
@@ -295,7 +296,7 @@ function findPreviousField(fg) {
 
 // Adding allowed fields where pawn can delete other figure
 
-function canPawnDelete(fg) {
+function pawnRules(fg) {
     if (fg.dataset.name != "pawn") {
         return
     }
@@ -327,6 +328,18 @@ function canPawnDelete(fg) {
                 }
                 else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByWhite) == true) {
                     field.classList.add('allowed')
+                }
+            }
+            else if (parseInt(field.dataset.column) == deleteOnLeftCol + 1) {
+                if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByBlack) == true) {
+                    if (field.classList.contains('allowed') == true) {
+                        field.classList.remove('allowed')
+                    }
+                }
+                else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByWhite) == true) {
+                    if (field.classList.contains('allowed') == true) {
+                        field.classList.remove('allowed')
+                    }
                 }
             }
         }
