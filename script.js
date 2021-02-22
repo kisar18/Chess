@@ -7,6 +7,8 @@ const blackFigures = document.querySelectorAll('.black-figure')
 let moves = 0
 var allowedFields = document.querySelectorAll('.allowed')
 
+const labels = document.querySelector('.turn-label')
+
 // Data attributes for figures (HTML elements) on the chessboard
 
 figures.forEach(figure => {
@@ -143,7 +145,8 @@ fields.forEach(field => {
             field.appendChild(draggable)
         }
         else {
-            findPreviousField(draggable)
+            var startingField = findPreviousField(draggable)
+            startingField.appendChild(draggable)
         }
     })
 })
@@ -160,6 +163,10 @@ function switchingSides() {
             whiteFigure.setAttribute('draggable', true)
             whiteFigure.style.cursor = "move"
         })
+
+        labels.style.color = "white"
+        labels.innerHTML = `<div>White's turn</div>
+        <div>White's turn</div>`
     }
     else {
         whiteFigures.forEach(whiteFigure => {
@@ -170,6 +177,10 @@ function switchingSides() {
             blackFigure.setAttribute('draggable', true)
             blackFigure.style.cursor = "move"
         })
+
+        labels.style.color = "black"
+        labels.innerHTML = `<div>Black's turn</div>
+        <div>Black's turn</div>`
     }
 }
 
@@ -190,6 +201,20 @@ function updateFieldOccupation(fg) {
     }
 }
 
+// Function that helps generate new row or column values to obtain allowed fields
+
+function getNewvalue(oldNumber, typeOfNumber, number) {
+    var newValue = oldNumber
+    if (typeOfNumber == "-") {
+        newValue -= parseInt(number)
+    }
+    else {
+        newValue += parseInt(number)
+    }
+
+    return newValue
+}
+
 // Function for selecting fields where the figure can move according to the rules, and also for not deleting a figure of the same color
 
 function getAllowedFields(fg) {
@@ -206,8 +231,7 @@ function getAllowedFields(fg) {
     var backupColumn
     var direction = 0
     var wasStopped = false
-
-    //canPawnDelete(fg)
+    let allowedF = []
 
     fields.forEach(field => {
         if (field.id == fg.dataset.previousPosition) {
@@ -224,22 +248,9 @@ function getAllowedFields(fg) {
             wasStopped = false
         }
         if ((i - direction) % 4 == 0) {
-            if (stringMoves[i] == "-" && stringMoves[i + 2] == "-") {
-                newRow -= parseInt(stringMoves[i + 1])
-                newColumn -= parseInt(stringMoves[i + 3])
-            }
-            else if (stringMoves[i] == "-" && stringMoves[i + 2] == "+") {
-                newRow -= parseInt(stringMoves[i + 1])
-                newColumn += parseInt(stringMoves[i + 3])
-            }
-            else if (stringMoves[i] == "+" && stringMoves[i + 2] == "-") {
-                newRow += parseInt(stringMoves[i + 1])
-                newColumn -= parseInt(stringMoves[i + 3])
-            }
-            else {
-                newRow += parseInt(stringMoves[i + 1])
-                newColumn += parseInt(stringMoves[i + 3])
-            }
+            newRow = getNewvalue(backupRow, stringMoves[i], stringMoves[i + 1])
+            newColumn = getNewvalue(backupColumn, stringMoves[i + 2], stringMoves[i + 3])
+
             if (newRow > 0 && newRow < 9 && newColumn > 0 && newColumn < 9 && wasStopped == false) {
                 fields.forEach(field => {
                     if (field.dataset.row == newRow && field.dataset.column == newColumn && wasFound == false) {
@@ -247,14 +258,14 @@ function getAllowedFields(fg) {
                         if (field.childElementCount > 0) {
                             if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByBlack) == true) {
                                 field.classList.add('allowed')
-                                console.log(field.id)
+                                allowedF.push(field.id)
                             }
                             else if (fg.dataset.color == "white" && JSON.parse(field.dataset.occupiedByWhite) == true) {
                                 wasStopped = true
                             }
                             else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByWhite) == true) {
                                 field.classList.add('allowed')
-                                console.log(field.id)
+                                allowedF.push(field.id)
                             }
                             else if (fg.dataset.color == "black" && JSON.parse(field.dataset.occupiedByBlack) == true) {
                                 wasStopped = true
@@ -262,7 +273,7 @@ function getAllowedFields(fg) {
                         }
                         else {
                             field.classList.add('allowed')
-                            console.log(field.id)
+                            allowedF.push(field.id)
                         }
                     }
                 })
@@ -277,11 +288,13 @@ function getAllowedFields(fg) {
     }
     pawnRules(fg)
     allowedFields = document.querySelectorAll('.allowed')
+    return allowedF
 }
 
 // Function for placing the dragged figure to the statring field while draging over the figure of the same color
 
 function findPreviousField(fg) {
+    var previous
     fields.forEach(field => {
         if (field.childElementCount > 0) {
             if (field.children[0].classList.contains('dragging') == true) {
@@ -289,9 +302,10 @@ function findPreviousField(fg) {
             }
         }
         if (field.id == fg.dataset.previousPosition) {
-            field.appendChild(fg)
+            previous = field
         }
     })
+    return previous
 }
 
 // Adding allowed fields where pawn can delete other figure
@@ -345,3 +359,71 @@ function pawnRules(fg) {
         }
     })
 }
+
+// Function that is checking if the game is over
+
+function isGameOver(king) {
+    let kingAvailableFields = []
+    let enemyAvailableFields = []
+    const allMoves = king.dataset.possibleMoves
+
+    const positionOfKing = findPreviousField(king)
+    const kingRow = parseInt(positionOfKing.dataset.row)
+    const kingColumn = parseInt(positionOfKing.dataset.column)
+    var newRow
+    var newColumn
+    var wasFound = false
+
+    for (let i = 0; i < allMoves.length; i++) {
+        if (i % 5 == 0) {
+            newRow = getNewvalue(kingRow, allMoves[i], allMoves[i + 1])
+            newColumn = getNewvalue(kingColumn, allMoves[i + 2], allMoves[i + 3])
+            wasFound = false
+        }
+
+        if (newRow > 0 && newRow < 9 && newColumn > 1 && newColumn < 9) {
+            fields.forEach(field => {
+                if (field.dataset.row == newRow && field.dataset.column == newColumn && wasFound == false) {
+                    if ((king.dataset.color == "white" && JSON.parse(field.dataset.occupiedByWhite) == false)
+                    || (king.dataset.color == "black" && JSON.parse(field.dataset.occupiedByBlack) == false)) {
+                        kingAvailableFields.push(field.id)
+                        wasFound = true
+                    }
+                }
+            })
+        }
+    }
+
+    let enemy
+
+    if (king.dataset.color == "white"){
+        enemy = blackFigures
+    }
+    else {
+        enemy = whiteFigures
+    }
+    
+    console.log("King:", kingAvailableFields)
+    let allEnemyAvailable = []
+
+    for (let i = 0; i < enemy.length; i++) {
+        enemyAvailableFields = getAllowedFields(enemy[i])
+        for (let j = 0; j < enemyAvailableFields.length; j++) {
+            allEnemyAvailable.push(enemyAvailableFields[j])
+        }
+    }
+    console.log(allEnemyAvailable)
+}
+
+isGameOver(whiteFigures[11])
+
+// Disables the turn lables while the window is too small
+
+window.addEventListener('resize', () => {
+    if (document.body.clientWidth < 1300) {
+        document.querySelector('.turn-label').style.display = "none"
+    }
+    else {
+        document.querySelector('.turn-label').style.display = "flex"
+    }
+})

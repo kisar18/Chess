@@ -113,6 +113,11 @@ body {
     left: 16px;
     font-size: 65px;
     text-align: center;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .figure.dragging {
@@ -122,4 +127,21 @@ body {
 .white-figure {
     color: var(--clr-whiteFigure);
     cursor: move;
+}
+
+.turn-label {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100vw;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 2vw;
+    font-weight: bold;
+}
+
+.turn-label :nth-child(1), 
+.turn-label :nth-child(2) {
+    padding: 5vw;
 }
